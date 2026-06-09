@@ -1,5 +1,18 @@
-DB_USER = task_api;
-DB_HOST = localhost;
-DB_DATABASE = task_manager;
-DB_PASSWORD = Task26;
-DB_PORT = 5432;
+import "dotenv/config";
+import pg from "pg";
+
+const { Pool } = pg;
+
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
+
+const db = {
+  query: (text, params) => pool.query(text, params),
+};
+
+export default db;
