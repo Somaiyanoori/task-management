@@ -1,54 +1,45 @@
 import { useState, useEffect } from "react";
-import axios from "axios"; // We'll use axios to talk to our API
-import "./index.css"; // Let's use the main index.css for some simple styling
+import axios from "axios";
+import "./index.css";
 
-// The base URL of our backend API
 const API_URL = "http://localhost:3000/tasks";
 
 function App() {
-  // State for the list of tasks
   const [tasks, setTasks] = useState([]);
-  // State for the new task title input field
   const [newTaskTitle, setNewTaskTitle] = useState("");
 
-  // useEffect runs when the component first loads.
-  // It's the perfect place to fetch initial data.
   useEffect(() => {
     fetchTasks();
   }, []);
 
-  // Function to fetch all tasks from the API
   const fetchTasks = async () => {
     try {
       const response = await axios.get(API_URL);
-      setTasks(response.data); // Update the state with the fetched tasks
+      setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
   };
 
-  // Function to handle the form submission for creating a new task
   const handleCreateTask = async (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
-    if (!newTaskTitle.trim()) return; // Don't create empty tasks
+    e.preventDefault();
+    if (!newTaskTitle.trim()) return;
 
     try {
       const response = await axios.post(API_URL, { title: newTaskTitle });
-      // Add the new task to our state to update the UI instantly
+
       setTasks([...tasks, response.data]);
-      setNewTaskTitle(""); // Clear the input field
+      setNewTaskTitle("");
     } catch (error) {
       console.error("Error creating task:", error);
     }
   };
 
-  // Function to update the status of a task
   const handleUpdateTaskStatus = async (id, newStatus) => {
     try {
       const response = await axios.patch(`${API_URL}/${id}`, {
         status: newStatus,
       });
-      // Update the specific task in our state to re-render the UI
       setTasks(tasks.map((task) => (task.id === id ? response.data : task)));
     } catch (error) {
       console.error("Error updating task status:", error);
