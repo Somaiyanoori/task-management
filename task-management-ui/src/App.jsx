@@ -8,6 +8,16 @@ const API_URL = `${import.meta.env.VITE_API_URL}/tasks`;
 function App() {
   const [tasks, setTasks] = useState([]);
   const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   useEffect(() => {
     fetchTasks();
@@ -17,8 +27,10 @@ function App() {
     try {
       const response = await axios.get(API_URL);
       setTasks(response.data);
+      setError(null);
     } catch (error) {
       console.error("Error fetching tasks:", error);
+      setError("Could not fetch tasks. The server may be down.");
     }
   };
 
@@ -29,8 +41,10 @@ function App() {
       const response = await axios.post(API_URL, { title: newTaskTitle });
       setTasks([...tasks, response.data]);
       setNewTaskTitle("");
+      setError(null);
     } catch (error) {
       console.error("Error creating task:", error);
+      setError("Failed to create task. Please try again.");
     }
   };
 
@@ -40,14 +54,18 @@ function App() {
         status: newStatus,
       });
       setTasks(tasks.map((task) => (task.id === id ? response.data : task)));
+      setError(null);
     } catch (error) {
       console.error("Error updating task status:", error);
+      setError("Failed to update task. Please try again.");
     }
   };
 
   return (
     <div className="container">
       <h1>Task Management</h1>
+      {error && <div className="error-message">{error}</div>}
+
       <form onSubmit={handleCreateTask} className="task-form">
         <input
           type="text"

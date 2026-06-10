@@ -3,17 +3,18 @@ import * as model from "../models/task.model.js";
 export const createTask = async (req, res) => {
   try {
     const { title } = req.body;
-    if (!title) {
-      return res.status(400).json({ message: "Title is required" });
+
+    if (!title || title.trim() === "") {
+      return res.status(400).json({ message: "Title cannot be empty" });
     }
-    const newTask = await model.createTask(title);
+
+    const newTask = await model.createTask(title.trim());
     res.status(201).json(newTask);
   } catch (error) {
     console.error("Error in createTask controller:", error);
     res.status(500).json({ message: "Error creating task" });
   }
 };
-
 export const getAllTasks = async (req, res) => {
   try {
     const tasks = await model.getAllTasks();
