@@ -72,4 +72,6 @@ Method	Endpoint	Description	Request Body
  - POST	/tasks	Create a new task	{ "title": "string" }
  - PATCH	/tasks/:id	Update a task's status	{ "status": "string" }
  - Note: The allowed values for status are to-do, in-progress, and done.
-
+   
+Author
+Somaiya Noori
