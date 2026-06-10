@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/immutability */
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./index.css";
 
-const API_URL = "http://localhost:3000/tasks";
+const API_URL = `${import.meta.env.VITE_API_URL}/tasks`;
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -24,10 +25,8 @@ function App() {
   const handleCreateTask = async (e) => {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
-
     try {
       const response = await axios.post(API_URL, { title: newTaskTitle });
-
       setTasks([...tasks, response.data]);
       setNewTaskTitle("");
     } catch (error) {
@@ -49,8 +48,6 @@ function App() {
   return (
     <div className="container">
       <h1>Task Management</h1>
-
-      {/* Form to create a new task */}
       <form onSubmit={handleCreateTask} className="task-form">
         <input
           type="text"
@@ -60,14 +57,11 @@ function App() {
         />
         <button type="submit">Add Task</button>
       </form>
-
-      {/* List of tasks */}
       <div className="task-list">
         {tasks.map((task) => (
           <div key={task.id} className={`task-item status-${task.status}`}>
             <p>{task.title}</p>
             <div className="task-status">
-              <span>Status: {task.status}</span>
               <div className="status-buttons">
                 {task.status !== "to-do" && (
                   <button
